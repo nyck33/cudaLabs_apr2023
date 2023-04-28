@@ -66,24 +66,26 @@ int main()
   initWith(4, b, N);
   initWith(0, c, N);
 
-  size_t threadsPerBlock;
-  size_t numberOfBlocks;
+  //size_t threadsPerBlock;
+  //size_t numberOfBlocks;
 
   /*
    * nsys should register performance changes when execution configuration
    * is updated.
    * threadsPerBlock: 1,1024, 256
-   * dim3 ()
+   * dim3 (16, 16, 1)
+   * numblocks ((N/threadsperBlock) + 1, ...)
    * numBlocks:1, 1, 4
    */
 
-  threadsPerBlock = 1024;
-  numberOfBlocks = 1;
-
+  //threadsPerBlock = 256;
+  //numberOfBlocks = 4;
+  dim3 threadsPerBlock = (16,16,1);
+  dim3 numBlocks = ((N/threadsPerBlock.x)+1, (N/threadsPerBlock.y)+1, 1);
   cudaError_t addVectorsErr;
   cudaError_t asyncErr;
 
-  addVectorsInto<<<numberOfBlocks, threadsPerBlock>>>(c, a, b, N);
+  addVectorsInto<<<numBlocks, threadsPerBlock>>>(c, a, b, N);
 
   addVectorsErr = cudaGetLastError();
   if(addVectorsErr != cudaSuccess) printf("Error: %s\n", cudaGetErrorString(addVectorsErr));
