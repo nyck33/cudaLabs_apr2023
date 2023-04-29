@@ -25,9 +25,28 @@ int main()
   size_t size = N * sizeof(int);
   int *a;
   cudaMallocManaged(&a, size);
+  int numBlocks = 4;
+  int threadsPerBlock = 256;
+  //cudaError_t deviceErr, asyncErr;
 
+  deviceKernel<<<numBlocks, threadsPerBlock>>>(a, N);
+  cudaDeviceSynchronize();
+  //deviceErr = cudaGetLastError();
   /*
-   * Conduct experiments to learn more about the behavior of
+  if(deviceErr != cudaSuccess) {
+    printf("error: %s\n", cudaGetErrorString(deviceErr));
+
+  }
+
+  asyncErr = cudaDeviceSynchronize();
+  if(asyncErr != cudaSuccess){
+    printf("Error: %s\n", cudaGetErrorString(asyncErr));
+
+  } 
+  */
+  /*
+   *CPU first 
+   Conduct experiments to learn more about the behavior of
    * `cudaMallocManaged`.
    *
    * What happens when unified memory is accessed only by the GPU?
@@ -37,7 +56,26 @@ int main()
    *
    * Hypothesize about UM behavior, page faulting specificially, before each
    * experiment, and then verify by running `nsys`.
+   GPU first
+
    */
+  hostFunction(a, N);
 
   cudaFree(a);
 }
+/*
+host first, device second
+CUDA Memory Operation Statistics (by size in KiB):
+
+   Total     Operations  Average  Minimum  Maximum               Operation            
+ ----------  ----------  -------  -------  --------  ---------------------------------
+ 131072.000         768  170.667    4.000  1016.000  [CUDA Unified Memory memcpy HtoD]
+
+host second, device first
+CUDA Memory Operation Statistics (by time):
+
+ Time(%)  Total Time (ns)  Operations  Average  Minimum  Maximum              Operation            
+ -------  ---------------  ----------  -------  -------  -------  ---------------------------------
+   100.0         21215246         768  27624.0     1599   162494  [CUDA Unified Memory memcpy DtoH]
+
+*/
