@@ -4,6 +4,17 @@
  * Host function to initialize vector elements. This function
  * simply initializes each element to equal its index in the
  * vector.
+ * 
+ * 
+ * In order to support the GPU's ability to perform as many parallel operations as possible, performance gains can often be had by choosing a grid size that has a number of blocks that is a multiple of the number of SMs on a given GPU.
+ * Multiple of 14 SMs for gridDim
+ * 
+ * Additionally, SMs create, manage, schedule, and execute groupings of 32 threads from within a block called warps. A more in depth coverage of SMs and warps is beyond the scope of this course, however, it is important to know that performance gains can also be had by choosing a block size that has a number of threads that is a multiple of 32.
+ Device ID: 0
+Number of SMs: 14
+Compute Capability Major: 7
+Compute Capability Minor: 5
+Warp Size: 32
  */
 
 void initWith(float num, float *a, int N)
@@ -80,8 +91,12 @@ int main()
 
   //threadsPerBlock = 256;
   //numberOfBlocks = 4;
-  dim3 threadsPerBlock = (16,16,1);
-  dim3 numBlocks = ((N/threadsPerBlock.x)+1, (N/threadsPerBlock.y)+1, 1);
+  //dim3 threadsPerBlock = (16, 16,1);
+  //dim3 numBlocks = ((N/threadsPerBlock.x)+1, (N/threadsPerBlock.y)+1, 1);
+  int threadsPerBlock = 32 * 8;
+  //for cloud device with 40 SMs
+  int numBlocks = 40 * 10;
+  //int numBlocks = 14 * 18;
   cudaError_t addVectorsErr;
   cudaError_t asyncErr;
 
