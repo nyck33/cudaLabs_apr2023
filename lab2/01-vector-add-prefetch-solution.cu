@@ -82,7 +82,6 @@ int main()
   asyncErr = cudaDeviceSynchronize();
   if(asyncErr != cudaSuccess) printf("Error: %s\n", cudaGetErrorString(asyncErr));
 
-  cudaMemPrefetchAsync(c, N, cudaCpuDeviceId);
   checkElementsAre(7, c, N);
 
   cudaFree(a);
@@ -137,23 +136,4 @@ CUDA Memory Operation Statistics (by time):
  Time(%)  Total Time (ns)  Operations  Average  Minimum  Maximum              Operation            
  -------  ---------------  ----------  -------  -------  -------  ---------------------------------
    100.0         21201498         768  27606.1     1599   160028  [CUDA Unified Memory memcpy DtoH]
-
-prefetch back to cpu
-CUDA Kernel Statistics:
-
- Time(%)  Total Time (ns)  Instances   Average   Minimum  Maximum                     Name                    
- -------  ---------------  ---------  ---------  -------  -------  -------------------------------------------
-    52.3          1871467          3   623822.3   620335   627342  initWith(float, float*, int)               
-    47.7          1706448          1  1706448.0  1706448  1706448  addVectorsInto(float*, float*, float*, int)
-
-
-
-CUDA Memory Operation Statistics (by time):
-
- Time(%)  Total Time (ns)  Operations  Average  Minimum  Maximum              Operation            
- -------  ---------------  ----------  -------  -------  -------  ---------------------------------
-                 21201498
-   100.0         21007255         592  35485.2     1599   319735  [CUDA Unified Memory memcpy DtoH]
-
-
 */
