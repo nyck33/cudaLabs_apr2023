@@ -1,0 +1,6 @@
+2277791331.0, 1 threads
+160123034.0,  1024 threads
+134470617.0, 4 blocks of 256 threads
+2129712958.0 dim3(16,16,1), N/threadsPerBlock 
+
+139778208.0 online notebook optimized for 40 SMs
